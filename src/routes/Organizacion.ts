@@ -74,6 +74,10 @@ const router = express.Router();
  *           description: Usuarios asignados a la tarea (poblados con name)
  *           items:
  *             $ref: '#/components/schemas/TareaUsuarioAsignado'
+ *         estado:
+ *           type: string
+ *           enum: [todo, inprogress, done]
+ *           example: "todo"
  *     TareaCreate:
  *       type: object
  *       required:
@@ -98,6 +102,10 @@ const router = express.Router();
  *             type: string
  *           description: Array de ObjectIds de usuarios asignados
  *           example: ["65f1c2a1b2c3d4e5f6789012"]
+ *         estado:
+ *           type: string
+ *           enum: [todo, inprogress, done]
+ *           example: "todo"
  */
 
 /**

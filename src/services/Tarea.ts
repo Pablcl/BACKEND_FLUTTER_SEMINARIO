@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Tarea, { ITareaModel } from '../models/Tarea';
+import Tarea, { ITareaModel, TareaEstado } from '../models/Tarea';
 import Organizacion from '../models/Organizacion';
 
 interface ICreateTareaInput {
@@ -7,6 +7,7 @@ interface ICreateTareaInput {
     fechaInicio: Date;
     fechaFin: Date;
     usuarios?: (mongoose.Types.ObjectId | string)[];
+    estado?: 'todo' | 'inprogress' | 'done';
 }
 
 const createTareaByOrganizacion = async (
@@ -28,7 +29,8 @@ const createTareaByOrganizacion = async (
         fechaInicio: data.fechaInicio,
         fechaFin: data.fechaFin,
         usuarios: data.usuarios || [],
-        organizacionId
+        organizacionId,
+        estado: data.estado || 'todo'
     });
 
     return await tarea.save();
@@ -42,4 +44,18 @@ const getTareasByOrganizacion = async (organizacionId: string): Promise<ITareaMo
     return await Tarea.find({ organizacionId }).populate({ path: 'usuarios', select: 'name' });
 };
 
-export default { createTareaByOrganizacion, getTareasByOrganizacion };
+const updateEstado = async (tareaId: string, estado: TareaEstado): Promise<ITareaModel | null> => {
+    if (!mongoose.Types.ObjectId.isValid(tareaId)) {
+        return null;
+    }
+
+    const tarea = await Tarea.findById(tareaId);
+    if (!tarea) {
+        return null;
+    }
+
+    tarea.estado = estado;
+    return await tarea.save();
+};
+
+export default { createTareaByOrganizacion, getTareasByOrganizacion, updateEstado };

@@ -19,4 +19,13 @@ const readByOrganizacion = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export default { createByOrganizacion, readByOrganizacion };
+const updateEstado = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const updatedTarea = await TareaService.updateEstado(req.params.tareaId, req.body.estado);
+        return updatedTarea ? res.status(200).json(updatedTarea) : res.status(404).json({ message: 'not found' });
+    } catch (error) {
+        return res.status(500).json({ error });
+    }
+};
+
+export default { createByOrganizacion, readByOrganizacion, updateEstado };
